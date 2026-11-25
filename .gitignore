@@ -1,0 +1,27 @@
+# Local-only — never commit, never deploy
+_local/
+.specstory/
+.cursorindexingignore
+
+# Secrets & local env
+.env
+.env.*
+!.env.example
+.dev.vars
+*.local
+
+# Cursor plan copies if they land in-repo
+.cursor/plans/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Dependencies / build
+node_modules/
+.wrangler/
+dist/
+.cache/

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manage draw — AllWrapt</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-title-key="meta.manageTitle">
+<div class="snow" id="snow" aria-hidden="true"></div>
+
+<main class="wrap" id="bootErr" hidden>
+  <a class="brand" href="/">AllWrapt<span class="dot">.</span></a>
+  <h1 class="page-title" data-i18n="manage.bootTitle">Can’t open this draw</h1>
+  <p class="sub" id="bootErrText" data-i18n="manage.bootText">This manage link looks incomplete. Check you copied the whole URL from when the draw was created.</p>
+  <p><a class="btn" href="/" data-i18n="manage.newDraw">Start a new draw</a></p>
+</main>
+
+<main class="wrap" id="app" hidden>
+  <a class="brand" href="/">AllWrapt<span class="dot">.</span></a>
+  <span class="pill" id="statusPill">Draft</span>
+  <h1 class="page-title" data-i18n="manage.title">Your draw</h1>
+  <p class="sub" data-i18n="manage.sub">There is no login. If you lose this page’s link, you can’t come back to edit this draw.</p>
+
+  <div class="manage-banner">
+    <strong data-i18n="manage.saveTitle">Save your secret manage link</strong>
+    <p style="margin:8px 0 0;color:var(--ink)" data-i18n="manage.saveBody">Bookmark this page, copy the link into your notes, or email it to yourself. It’s the only way to reopen this draw later. Anyone with the link can manage the event — keep it private.</p>
+    <code id="manageLink"></code>
+    <div style="margin-top:10px">
+      <button type="button" class="ghost" id="copyManage" data-i18n="manage.copyLink">Copy manage link</button>
+    </div>
+  </div>
+
+  <section class="panel">
+    <h2 data-i18n="manage.event">The event</h2>
+    <label class="field" for="ev" data-i18n="manage.name">Name</label>
+    <input type="text" id="ev" maxlength="120">
+    <label class="field" for="bud" data-i18n="manage.budget">Budget (optional)</label>
+    <input type="text" id="bud" data-i18n-placeholder="manage.budgetPh" placeholder="e.g. £20" maxlength="80">
+    <label class="field" for="note" data-i18n="manage.note">Message shown with the reveal (optional)</label>
+    <textarea id="note" data-i18n-placeholder="manage.notePh" placeholder="e.g. Gifts exchanged on 20 Dec" maxlength="500"></textarea>
+    <div class="msg" id="metaMsg" role="status"></div>
+  </section>
+
+  <section class="panel">
+    <h2 data-i18n="manage.people">Participants</h2>
+    <p class="hint" data-i18n="manage.peopleHint">At least three people.</p>
+    <div class="row">
+      <input type="text" id="pname" data-i18n-placeholder="manage.namePh" placeholder="Name" aria-label="Participant name" maxlength="80">
+      <input type="email" id="pemail" placeholder="Email (optional)" aria-label="Participant email" maxlength="120" hidden>
+      <button type="button" id="addP" data-i18n="manage.addPerson">Add person</button>
+    </div>
+    <div class="chips" id="people"></div>
+    <div class="msg" id="pmsg" role="status"></div>
+  </section>
+
+  <section class="panel">
+    <h2 data-i18n="manage.rules">Rules</h2>
+    <p class="hint" data-i18n="manage.rulesHint">Stop certain pairings — for example partners. You can’t pick the same person twice, and AllWrapt blocks rules that would make a draw impossible.</p>
+    <div class="row">
+      <select id="ra" aria-label="Giver"></select>
+      <span style="color:var(--mute)" data-i18n="manage.cantGive">can’t give to</span>
+      <select id="rb" aria-label="Receiver"></select>
+    </div>
+    <label class="check"><input type="checkbox" id="both" checked> <span data-i18n="manage.bothWays">Apply both ways</span></label>
+    <button type="button" class="ghost" id="addR" data-i18n="manage.addRule">Add rule</button>
+    <ul class="list" id="rules"></ul>
+    <div class="msg" id="rmsg" role="status"></div>
+  </section>
+
+  <section class="panel">
+    <h2 data-i18n="manage.draw">Draw</h2>
+    <p class="hint" data-i18n="manage.drawHint">Results stay hidden here. You only see who each link belongs to — not who they drew.</p>
+    <button type="button" class="big" id="drawBtn" data-i18n="manage.drawBtn">Draw names</button>
+    <div class="msg" id="dmsg" role="status"></div>
+  </section>
+
+  <section class="panel" id="resultsSec" hidden>
+    <h2 data-i18n="manage.links">Private links</h2>
+    <p class="hint" data-i18n="manage.linksHint">Copy, WhatsApp, or email each person their own link.</p>
+    <ul class="list" id="results"></ul>
+  </section>
+</main>
+
+<script type="module" src="/js/manage.js"></script>
+</body>
+</html>

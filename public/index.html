@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AllWrapt — Secret Santa</title>
+<meta name="description" content="AllWrapt — Secret Santa for family and friends. Draw names, keep it secret, share private links.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-title-key="meta.homeTitle">
+<div class="snow" id="snow" aria-hidden="true"></div>
+<main class="wrap hero">
+  <a class="brand" href="/">AllWrapt<span class="dot">.</span></a>
+  <h1 data-i18n="home.headline">Secret Santa, all wrapt up.</h1>
+  <p class="lede" data-i18n="home.lede">Add your people, set a few rules, draw once, then send each person a private link.</p>
+  <div class="hero-actions">
+    <button type="button" class="big" id="startBtn" data-i18n="home.start">Start a draw</button>
+  </div>
+  <div class="msg" id="startMsg" role="status"></div>
+</main>
+<script type="module" src="/js/home.js"></script>
+</body>
+</html>

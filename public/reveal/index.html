@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your reveal — AllWrapt</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-title-key="meta.revealTitle">
+<div class="snow" id="snow" aria-hidden="true"></div>
+
+<main class="wrap" id="broken" hidden>
+  <a class="brand" href="/">AllWrapt<span class="dot">.</span></a>
+  <section class="panel">
+    <h2 data-i18n="reveal.brokenTitle">This link looks incomplete</h2>
+    <div class="msg" id="brokenMsg" role="status"></div>
+    <p class="hint" style="margin-top:12px" data-i18n="reveal.brokenHint">Ask the organiser to send it again, and make sure the whole link was copied.</p>
+  </section>
+</main>
+
+<main class="wrap" id="revealApp" hidden>
+  <section class="panel reveal">
+    <a class="brand" href="/" style="font-size:1.6rem;margin-bottom:20px">AllWrapt<span class="dot">.</span></a>
+    <p class="hello" id="rhello"></p>
+    <h1 class="page-title" id="revent" style="margin-bottom:12px"></h1>
+    <p class="cover" data-i18n="reveal.for">You are Secret Santa for…</p>
+    <div id="rcover" style="margin-top:20px">
+      <button type="button" class="big" id="showBtn" data-i18n="reveal.tap">Tap to reveal</button>
+    </div>
+    <div id="rshow" hidden>
+      <div class="name" id="rtarget"></div>
+      <button type="button" class="ghost" id="hideBtn" data-i18n="reveal.hide">Hide again</button>
+    </div>
+    <p class="meta" id="rbud"></p>
+    <p class="meta" id="rnote"></p>
+  </section>
+</main>
+
+<script type="module" src="/js/reveal.js"></script>
+</body>
+</html>

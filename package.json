@@ -1,0 +1,13 @@
+{
+  "name": "allwrapt",
+  "private": true,
+  "version": "1.0.0",
+  "description": "AllWrapt — Secret Santa for family and friends",
+  "scripts": {
+    "dev": "wrangler pages dev public --kv EVENTS --compatibility-date=2024-11-01",
+    "deploy": "wrangler pages deploy public"
+  },
+  "devDependencies": {
+    "wrangler": "^3.99.0"
+  }
+}
