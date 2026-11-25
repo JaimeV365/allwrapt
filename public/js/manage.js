@@ -34,11 +34,40 @@ function revealUrl(personId) {
 }
 
 function msgFor(person) {
+  // Keep real newlines for WhatsApp / mailto readability
   return t('manage.shareMsg', {
     name: person.name,
     title: event.title,
     url: revealUrl(person.id),
   });
+}
+
+function mailtoHref(person) {
+  const subject = t('manage.mailSubject', { title: event.title });
+  // CRLF plays nicest with desktop/mobile mail apps
+  const body = msgFor(person).replace(/\n/g, '\r\n');
+  const to = person.email ? encodeURIComponent(person.email) : '';
+  return (
+    `mailto:${to}` +
+    `?subject=${encodeURIComponent(subject)}` +
+    `&body=${encodeURIComponent(body)}`
+  );
+}
+
+function showDrawModal(show) {
+  const modal = $('#drawModal');
+  if (!modal) return;
+  if (show) {
+    $('#drawModalTitle').textContent = t('manage.drawing');
+    $('#drawModalHint').textContent = t('manage.drawingHint');
+    modal.hidden = false;
+  } else {
+    modal.hidden = true;
+  }
+}
+
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function apiErrorMessage(e) {
@@ -192,7 +221,7 @@ function renderResults() {
         <span class="act">
           <button type="button" data-copy="${esc(p.id)}">${esc(t('manage.copyReveal'))}</button>
           <button type="button" class="ghost" data-wa="${esc(p.id)}">${esc(t('manage.whatsapp'))}</button>
-          <button type="button" class="ghost" data-mail="${esc(p.id)}">${esc(t('manage.emailApp'))}</button>
+          <button type="button" class="ghost" data-mail="${esc(p.id)}">${esc(t('manage.email'))}</button>
         </span>
       </li>`
     )
@@ -320,15 +349,21 @@ $('#drawBtn')?.addEventListener('click', async () => {
   lastDrawError = '';
   say($('#dmsg'), '');
   $('#drawBtn').disabled = true;
+  showDrawModal(true);
+  const started = Date.now();
   try {
     const data = await api(`/api/events/${eventId}/draw`, {
       method: 'POST',
       token: manageToken,
     });
+    const elapsed = Date.now() - started;
+    if (elapsed < 2200) await wait(2200 - elapsed);
     event = data.event;
+    showDrawModal(false);
     render();
-    say($('#dmsg'), data.message || 'Done.', 'ok');
+    say($('#dmsg'), t('manage.drawDone'), 'ok');
   } catch (e) {
+    showDrawModal(false);
     lastDrawError = apiErrorMessage(e);
     say($('#dmsg'), lastDrawError, 'err');
     $('#drawBtn').disabled = Boolean(event?.drawn);
@@ -352,13 +387,7 @@ $('#results')?.addEventListener('click', async (e) => {
     window.open('https://wa.me/?text=' + encodeURIComponent(msgFor(person)), '_blank');
   }
   if (tset.mail) {
-    location.href =
-      'mailto:' +
-      encodeURIComponent(person.email || '') +
-      '?subject=' +
-      encodeURIComponent(t('manage.mailSubject', { title: event.title })) +
-      '&body=' +
-      encodeURIComponent(msgFor(person));
+    location.href = mailtoHref(person);
   }
 });
 
