@@ -77,7 +77,6 @@ function render(opts = {}) {
   $('#ev').value = event.title || '';
   $('#bud').value = event.budget || '';
   $('#note').value = event.note || '';
-  $('#statusPill').textContent = event.drawn ? t('manage.statusDrawn') : t('manage.statusDraft');
   $('#manageLink').textContent = manageUrl();
 
   if (!opts.keepErrors) {
