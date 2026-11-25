@@ -59,7 +59,6 @@ function showDrawModal(show) {
   if (!modal) return;
   if (show) {
     $('#drawModalTitle').textContent = t('manage.drawing');
-    $('#drawModalHint').textContent = t('manage.drawingHint');
     modal.hidden = false;
   } else {
     modal.hidden = true;
@@ -357,7 +356,7 @@ $('#drawBtn')?.addEventListener('click', async () => {
       token: manageToken,
     });
     const elapsed = Date.now() - started;
-    if (elapsed < 2200) await wait(2200 - elapsed);
+    if (elapsed < 3200) await wait(3200 - elapsed);
     event = data.event;
     showDrawModal(false);
     render();
