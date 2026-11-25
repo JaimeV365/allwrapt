@@ -251,7 +251,49 @@ export function formatDiagnosis(diagnosis, fallback) {
   return fallback || diagnosis.message || t('diag.fallback');
 }
 
+export function normalizeLang(code) {
+  const c = String(code || '')
+    .trim()
+    .toLowerCase()
+    .slice(0, 2);
+  return dict[c] ? c : null;
+}
+
+/** Read ?lang=es or ?lan=es from the current URL. */
+export function langFromUrl(search = location.search) {
+  const q = new URLSearchParams(search);
+  return normalizeLang(q.get('lang') || q.get('lan'));
+}
+
+/**
+ * Keep ?lang= in the address bar (shareable) without reloading.
+ * Preserves other query params (e.g. manage e/t, reveal t).
+ */
+export function syncLangToUrl(code = getLang()) {
+  const lang = normalizeLang(code) || 'en';
+  const url = new URL(location.href);
+  url.searchParams.delete('lan');
+  url.searchParams.set('lang', lang);
+  history.replaceState(null, '', url.pathname + url.search + url.hash);
+}
+
+/** Append current language to any absolute or relative URL. */
+export function withLang(href, code = getLang()) {
+  const lang = normalizeLang(code) || 'en';
+  try {
+    const url = new URL(href, location.origin);
+    url.searchParams.delete('lan');
+    url.searchParams.set('lang', lang);
+    if (href.startsWith('http')) return url.toString();
+    return url.pathname + url.search + url.hash;
+  } catch {
+    return href;
+  }
+}
+
 export function getLang() {
+  const fromUrl = langFromUrl();
+  if (fromUrl) return fromUrl;
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved && dict[saved]) return saved;
   const nav = (navigator.language || 'en').slice(0, 2).toLowerCase();
@@ -259,11 +301,12 @@ export function getLang() {
   return 'en';
 }
 
-export function setLang(code) {
-  if (!dict[code]) return getLang();
-  localStorage.setItem(STORAGE_KEY, code);
-  document.documentElement.lang = code;
-  return code;
+export function setLang(code, { syncUrl = true } = {}) {
+  const lang = normalizeLang(code) || getLang();
+  localStorage.setItem(STORAGE_KEY, lang);
+  document.documentElement.lang = lang;
+  if (syncUrl) syncLangToUrl(lang);
+  return lang;
 }
 
 export function t(key, vars = {}) {

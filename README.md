@@ -58,6 +58,16 @@ Secret Santa for family and friends — draw names, keep matches private, share 
 
    Optional — attach whenever you have one. Until then, use the `*.pages.dev` URL. Do not hardcode a domain in the app.
 
+## Languages
+
+English, Spanish, and French. Share a language with any of:
+
+- `https://allwrapt.pages.dev/es` → Spanish  
+- `https://allwrapt.pages.dev/fr` → French  
+- `https://allwrapt.pages.dev/?lang=es` (also accepts `?lan=es`)
+
+The flag bar updates `?lang=` in the URL so you can copy/share it. Manage and reveal links include the current language.
+
 ## How it works
 
 1. Anyone hits **Start a draw** → gets a secret `/manage/?e=…&t=…` link (bookmark it; it is the password).

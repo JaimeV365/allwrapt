@@ -39,6 +39,7 @@ export async function onRequestPost(context) {
       continue;
     }
 
+    // Language can be passed by the client later; default English share link
     const revealUrl = `${origin}/reveal/?t=${encodeURIComponent(token)}`;
     const payload = revealEmail({
       toName: person.name,

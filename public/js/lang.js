@@ -1,11 +1,13 @@
-import { LANGS, getLang, setLang, applyI18n, t } from './i18n.js';
+import { LANGS, getLang, setLang, applyI18n, t, langFromUrl, syncLangToUrl } from './i18n.js';
 
 /**
  * Mount a always-visible flag language switcher.
  * Uses local SVG files (never emoji / remote CDN).
+ * Honour ?lang= / ?lan= and keep the URL shareable.
  */
 export function mountLangSwitcher(onChange) {
-  setLang(getLang());
+  const fromUrl = langFromUrl();
+  setLang(fromUrl || getLang(), { syncUrl: true });
 
   let bar = document.getElementById('langBar');
   if (!bar) {
@@ -33,12 +35,14 @@ export function mountLangSwitcher(onChange) {
     if (!btn) return;
     const code = btn.getAttribute('data-lang');
     if (!code || code === getLang()) return;
-    setLang(code);
+    setLang(code, { syncUrl: true });
     applyI18n();
     paint();
     if (typeof onChange === 'function') onChange(code);
   };
 
+  // Ensure address bar shows the active language for easy copying/sharing
+  syncLangToUrl(getLang());
   paint();
   applyI18n();
   return { refresh: () => { applyI18n(); paint(); } };

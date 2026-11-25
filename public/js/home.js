@@ -1,7 +1,7 @@
 import { startSnow } from './snow.js';
 import { api, say } from './api.js';
 import { mountLangSwitcher } from './lang.js';
-import { t } from './i18n.js';
+import { t, withLang, getLang } from './i18n.js';
 
 startSnow();
 mountLangSwitcher();
@@ -17,7 +17,7 @@ btn?.addEventListener('click', async () => {
       method: 'POST',
       body: { title: 'Secret Santa' },
     });
-    location.href = data.managePath || data.manageUrl;
+    location.href = withLang(data.managePath || data.manageUrl, getLang());
   } catch (e) {
     say(msg, e.message || t('home.createError'), 'err');
     btn.disabled = false;

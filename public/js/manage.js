@@ -1,7 +1,7 @@
 import { startSnow } from './snow.js';
 import { api, esc, say, copyText } from './api.js';
 import { mountLangSwitcher } from './lang.js';
-import { t, formatDiagnosis, applyI18n } from './i18n.js';
+import { t, formatDiagnosis, applyI18n, withLang, getLang } from './i18n.js';
 
 startSnow();
 mountLangSwitcher(() => {
@@ -20,12 +20,17 @@ let lastDrawError = '';
 let lastPeopleError = '';
 
 function manageUrl() {
-  return `${location.origin}/manage/?e=${encodeURIComponent(eventId)}&t=${encodeURIComponent(manageToken)}`;
+  return withLang(
+    `${location.origin}/manage/?e=${encodeURIComponent(eventId)}&t=${encodeURIComponent(manageToken)}`,
+    getLang()
+  );
 }
 
 function revealUrl(personId) {
   const token = event?.reveals?.[personId];
-  return token ? `${location.origin}/reveal/?t=${encodeURIComponent(token)}` : '';
+  return token
+    ? withLang(`${location.origin}/reveal/?t=${encodeURIComponent(token)}`, getLang())
+    : '';
 }
 
 function msgFor(person) {
