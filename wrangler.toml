@@ -4,10 +4,5 @@ pages_build_output_dir = "public"
 
 [[kv_namespaces]]
 binding = "EVENTS"
-id = "00000000000000000000000000000000"
-preview_id = "00000000000000000000000000000000"
-
-# Replace the KV ids after: wrangler kv namespace create EVENTS
-# Set secrets in the Cloudflare dashboard or:
-#   wrangler pages secret put RESEND_API_KEY
-#   wrangler pages secret put RESEND_FROM
+id = "d43f6b48fcd34c91aac2c7049bb3c42e"
+preview_id = "8617c82d3f284fde9786569314a6fbf6"
