@@ -93,14 +93,14 @@ async function load() {
   }
 }
 
-async function savePatch(body) {
+async function savePatch(body, { silent = false, keepErrors = false } = {}) {
   const data = await api(`/api/events/${eventId}`, {
     method: 'PATCH',
     token: manageToken,
     body,
   });
   event = data.event;
-  render();
+  if (!silent) render({ keepErrors });
   return event;
 }
 
@@ -231,15 +231,20 @@ function queueMetaSave() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(async () => {
     try {
-      await savePatch({
-        title: $('#ev').value,
-        budget: $('#bud').value,
-        note: $('#note').value,
-      });
+      // silent: do not re-render inputs (that was stripping spaces mid-typing)
+      await savePatch(
+        {
+          title: $('#ev').value,
+          budget: $('#bud').value,
+          note: $('#note').value,
+        },
+        { silent: true }
+      );
+      $('#manageLink').textContent = manageUrl();
       say($('#metaMsg'), t('manage.saved'), 'ok');
       setTimeout(() => say($('#metaMsg'), ''), 1200);
     } catch (e) {
-      say($('#metaMsg'), e.message, 'err');
+      say($('#metaMsg'), apiErrorMessage(e), 'err');
     }
   }, 400);
 }

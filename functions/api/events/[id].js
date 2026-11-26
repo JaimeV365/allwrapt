@@ -24,9 +24,13 @@ export async function onRequestPatch(context) {
   const body = await readJson(request);
   if (!body) return withCors(err('Invalid request.', 400, { code: 'INVALID_JSON' }), request);
 
-  if (typeof body.title === 'string') event.title = body.title.trim().slice(0, 120) || event.title || 'Secret Santa';
-  if (typeof body.budget === 'string') event.budget = body.budget.trim().slice(0, 80);
-  if (typeof body.note === 'string') event.note = body.note.trim().slice(0, 500);
+  // Do not trim while editing — trailing spaces are needed while typing multi-word titles
+  if (typeof body.title === 'string') {
+    const title = body.title.slice(0, 120);
+    event.title = title.trim() ? title : event.title || 'Secret Santa';
+  }
+  if (typeof body.budget === 'string') event.budget = body.budget.slice(0, 80);
+  if (typeof body.note === 'string') event.note = body.note.slice(0, 500);
 
   if (event.draw) {
     if (body.people !== undefined || body.rules !== undefined) {
