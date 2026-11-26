@@ -68,6 +68,22 @@ English, Spanish, and French. Share a language with any of:
 
 The flag bar updates `?lang=` in the URL so you can copy/share it. Manage and reveal links include the current language.
 
+## SEO
+
+Public pages include canonical URLs, Open Graph / Twitter cards, `hreflang`, JSON-LD, `robots.txt`, and `sitemap.xml`. Manage and reveal routes are `noindex`.
+
+## Analytics (Cloudflare Web Analytics)
+
+Privacy-friendly traffic stats (no cookies, GDPR-friendly):
+
+1. Cloudflare dashboard → **Analytics & logs** → **Web Analytics** → **Add a site**
+2. Site: `https://allwrapt.pages.dev`
+3. Copy the beacon **token**
+4. Paste it into [`public/js/analytics-config.js`](public/js/analytics-config.js) replacing `PASTE_TOKEN_HERE`
+5. Commit and push — stats appear in the Cloudflare Web Analytics dashboard
+
+Until the token is set, the analytics script does nothing.
+
 ## How it works
 
 1. Anyone hits **Start a draw** → gets a secret `/manage/?e=…&t=…` link (bookmark it; it is the password).

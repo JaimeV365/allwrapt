@@ -1,0 +1,13 @@
+# AllWrapt — public marketing pages only
+User-agent: *
+Allow: /
+Allow: /es
+Allow: /fr
+Allow: /en
+
+# Private organiser / reveal links must stay out of search
+Disallow: /manage
+Disallow: /reveal
+Disallow: /api/
+
+Sitemap: https://allwrapt.pages.dev/sitemap.xml

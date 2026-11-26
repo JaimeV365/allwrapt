@@ -3,14 +3,68 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AllWrapt — Secret Santa</title>
-<meta name="description" content="AllWrapt — Secret Santa for family and friends. Draw names, keep it secret, share private links.">
+<title>AllWrapt — Free Secret Santa draw for family &amp; friends</title>
+<meta name="description" content="AllWrapt makes Secret Santa simple: add your group, set exclusion rules, draw once, and share private reveal links. Free, no login, in English, Spanish, and French.">
+<meta name="keywords" content="Secret Santa, Amigo Invisible, Père Noël secret, gift exchange, name draw, AllWrapt">
+<meta name="author" content="AllWrapt">
+<meta name="theme-color" content="#0f2a22">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://allwrapt.pages.dev/">
+<link rel="alternate" hreflang="en" href="https://allwrapt.pages.dev/en">
+<link rel="alternate" hreflang="es" href="https://allwrapt.pages.dev/es">
+<link rel="alternate" hreflang="fr" href="https://allwrapt.pages.dev/fr">
+<link rel="alternate" hreflang="x-default" href="https://allwrapt.pages.dev/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AllWrapt">
+<meta property="og:locale" content="en_GB">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:url" content="https://allwrapt.pages.dev/">
+<meta property="og:title" content="AllWrapt — Free Secret Santa draw">
+<meta property="og:description" content="Add your group, set a few rules, draw once, and share private links. No login needed.">
+<meta property="og:image" content="https://allwrapt.pages.dev/og.jpg">
+<meta property="og:image:width" content="1536">
+<meta property="og:image:height" content="1024">
+<meta property="og:image:alt" content="AllWrapt — Secret Santa for family and friends">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AllWrapt — Free Secret Santa draw">
+<meta name="twitter:description" content="Add your group, set a few rules, draw once, and share private links. No login needed.">
+<meta name="twitter:image" content="https://allwrapt.pages.dev/og.jpg">
+
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/favicon.svg">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/styles.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "AllWrapt",
+  "url": "https://allwrapt.pages.dev/",
+  "description": "Free Secret Santa draw for family and friends. Add people, set exclusion rules, draw once, share private reveal links. Available in English, Spanish, and French.",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Any",
+  "inLanguage": ["en", "es", "fr"],
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "GBP"
+  },
+  "image": "https://allwrapt.pages.dev/og.jpg",
+  "creator": {
+    "@type": "Organization",
+    "name": "AllWrapt"
+  }
+}
+</script>
 </head>
 <body data-title-key="meta.homeTitle">
 <div class="snow" id="snow" aria-hidden="true"></div>
@@ -24,5 +78,6 @@
   <div class="msg" id="startMsg" role="status"></div>
 </main>
 <script type="module" src="/js/home.js"></script>
+<script type="module" src="/js/analytics.js"></script>
 </body>
 </html>

@@ -2,13 +2,47 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<title>AllWrapt — Français</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AllWrapt — Père Noël secret gratuit pour famille et amis</title>
+<meta name="description" content="AllWrapt simplifie le Père Noël secret : ajoutez votre groupe, posez des règles d’exclusion, tirez une fois et partagez des liens privés. Gratuit, sans compte, en français, anglais et espagnol.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://allwrapt.pages.dev/fr">
+<link rel="alternate" hreflang="en" href="https://allwrapt.pages.dev/en">
+<link rel="alternate" hreflang="es" href="https://allwrapt.pages.dev/es">
+<link rel="alternate" hreflang="fr" href="https://allwrapt.pages.dev/fr">
+<link rel="alternate" hreflang="x-default" href="https://allwrapt.pages.dev/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AllWrapt">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:url" content="https://allwrapt.pages.dev/fr">
+<meta property="og:title" content="AllWrapt — Père Noël secret gratuit">
+<meta property="og:description" content="Ajoutez votre groupe, posez quelques règles, tirez une fois et partagez des liens privés. Sans compte.">
+<meta property="og:image" content="https://allwrapt.pages.dev/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AllWrapt — Père Noël secret gratuit">
+<meta name="twitter:description" content="Ajoutez votre groupe, posez quelques règles, tirez une fois et partagez des liens privés. Sans compte.">
+<meta name="twitter:image" content="https://allwrapt.pages.dev/og.jpg">
+<meta name="theme-color" content="#0f2a22">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<meta http-equiv="refresh" content="0;url=/?lang=fr">
-<link rel="canonical" href="/?lang=fr">
-<script>location.replace('/?lang=fr');</script>
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/styles.css">
+<script>localStorage.setItem('allwrapt-lang','fr');</script>
 </head>
-<body>
-<p><a href="/?lang=fr">AllWrapt en français</a></p>
+<body data-title-key="meta.homeTitle">
+<div class="snow" id="snow" aria-hidden="true"></div>
+<main class="wrap hero">
+  <a class="brand" href="/fr">AllWrapt<span class="dot">.</span></a>
+  <h1 data-i18n="home.headline">Père Noël secret, tout est prêt.</h1>
+  <p class="lede" data-i18n="home.lede">Ajoutez vos proches, posez quelques règles, tirez une fois, puis envoyez à chacun un lien privé.</p>
+  <div class="hero-actions">
+    <button type="button" class="big" id="startBtn" data-i18n="home.start">Commencer un tirage</button>
+  </div>
+  <div class="msg" id="startMsg" role="status"></div>
+</main>
+<script type="module" src="/js/home.js"></script>
+<script type="module" src="/js/analytics.js"></script>
 </body>
 </html>

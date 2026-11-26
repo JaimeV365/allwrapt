@@ -2,13 +2,47 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>AllWrapt — Español</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AllWrapt — Amigo Invisible gratis para familia y amigos</title>
+<meta name="description" content="AllWrapt facilita el Amigo Invisible: añade al grupo, pon reglas de exclusión, sortea una vez y comparte enlaces privados. Gratis, sin registro, en español, inglés y francés.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://allwrapt.pages.dev/es">
+<link rel="alternate" hreflang="en" href="https://allwrapt.pages.dev/en">
+<link rel="alternate" hreflang="es" href="https://allwrapt.pages.dev/es">
+<link rel="alternate" hreflang="fr" href="https://allwrapt.pages.dev/fr">
+<link rel="alternate" hreflang="x-default" href="https://allwrapt.pages.dev/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AllWrapt">
+<meta property="og:locale" content="es_ES">
+<meta property="og:url" content="https://allwrapt.pages.dev/es">
+<meta property="og:title" content="AllWrapt — Amigo Invisible gratis">
+<meta property="og:description" content="Añade al grupo, pon unas reglas, sortea una vez y comparte enlaces privados. Sin registro.">
+<meta property="og:image" content="https://allwrapt.pages.dev/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AllWrapt — Amigo Invisible gratis">
+<meta name="twitter:description" content="Añade al grupo, pon unas reglas, sortea una vez y comparte enlaces privados. Sin registro.">
+<meta name="twitter:image" content="https://allwrapt.pages.dev/og.jpg">
+<meta name="theme-color" content="#0f2a22">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<meta http-equiv="refresh" content="0;url=/?lang=es">
-<link rel="canonical" href="/?lang=es">
-<script>location.replace('/?lang=es');</script>
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/styles.css">
+<script>localStorage.setItem('allwrapt-lang','es');</script>
 </head>
-<body>
-<p><a href="/?lang=es">AllWrapt en español</a></p>
+<body data-title-key="meta.homeTitle">
+<div class="snow" id="snow" aria-hidden="true"></div>
+<main class="wrap hero">
+  <a class="brand" href="/es">AllWrapt<span class="dot">.</span></a>
+  <h1 data-i18n="home.headline">Amigo Invisible, todo resuelto.</h1>
+  <p class="lede" data-i18n="home.lede">Añade a tu gente, pon unas reglas, sortea una vez y envía a cada persona su enlace privado.</p>
+  <div class="hero-actions">
+    <button type="button" class="big" id="startBtn" data-i18n="home.start">Empezar un sorteo</button>
+  </div>
+  <div class="msg" id="startMsg" role="status"></div>
+</main>
+<script type="module" src="/js/home.js"></script>
+<script type="module" src="/js/analytics.js"></script>
 </body>
 </html>
