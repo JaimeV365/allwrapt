@@ -21,10 +21,14 @@ export async function loadEvent(env, id) {
 
 export async function requireManage(env, id, request) {
   const event = await loadEvent(env, id);
-  if (!event) return { error: err('Event not found.', 404) };
+  if (!event) return { error: err('Occasion not found.', 404, { code: 'NOT_FOUND' }) };
   const token = getManageToken(request);
   if (!token || token !== event.manageToken) {
-    return { error: err('Invalid or missing manage link. Check you copied the full URL.', 401) };
+    return {
+      error: err('Invalid or missing manage link. Check you copied the full URL.', 401, {
+        code: 'BAD_MANAGE_TOKEN',
+      }),
+    };
   }
   return { event };
 }

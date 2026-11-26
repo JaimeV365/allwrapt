@@ -10,12 +10,16 @@ export async function onRequestOptions(context) {
 export async function onRequestGet(context) {
   const { request, env, params } = context;
   const token = params.token;
-  if (!token) return withCors(err('Missing reveal token.', 400), request);
+  if (!token) {
+    return withCors(err('This link looks incomplete.', 400, { code: 'REVEAL_BAD' }), request);
+  }
 
   const raw = await env.EVENTS.get(revealKey(token));
   if (!raw) {
     return withCors(
-      err('This link looks incomplete or out of date. Ask the organiser for a new one.', 404),
+      err('This link looks incomplete or out of date. Ask the organiser for a new one.', 404, {
+        code: 'REVEAL_BAD',
+      }),
       request
     );
   }
@@ -24,12 +28,15 @@ export async function onRequestGet(context) {
   try {
     ref = JSON.parse(raw);
   } catch {
-    return withCors(err('This link looks incomplete.', 400), request);
+    return withCors(err('This link looks incomplete.', 400, { code: 'REVEAL_BAD' }), request);
   }
 
   const event = await loadEvent(env, ref.eventId);
   if (!event?.draw) {
-    return withCors(err('This draw is no longer available.', 404), request);
+    return withCors(
+      err('This draw is no longer available.', 404, { code: 'REVEAL_GONE' }),
+      request
+    );
   }
 
   const person = event.people.find((p) => p.id === ref.personId);
@@ -37,7 +44,10 @@ export async function onRequestGet(context) {
   const target = event.people.find((p) => p.id === targetId);
 
   if (!person || !target || event.draw.reveals[person.id] !== token) {
-    return withCors(err('This link looks incomplete or out of date.', 404), request);
+    return withCors(
+      err('This link looks incomplete or out of date.', 404, { code: 'REVEAL_BAD' }),
+      request
+    );
   }
 
   return withCors(

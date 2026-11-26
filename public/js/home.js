@@ -15,7 +15,7 @@ btn?.addEventListener('click', async () => {
   try {
     const data = await api('/api/events', {
       method: 'POST',
-      body: { title: 'Secret Santa' },
+      body: { title: t('home.defaultTitle') },
     });
     location.href = withLang(data.managePath || data.manageUrl, getLang());
   } catch (e) {

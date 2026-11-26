@@ -22,16 +22,20 @@ export async function onRequestPatch(context) {
   if (error) return withCors(error, request);
 
   const body = await readJson(request);
-  if (!body) return withCors(err('Invalid JSON body.'), request);
+  if (!body) return withCors(err('Invalid request.', 400, { code: 'INVALID_JSON' }), request);
 
-  if (typeof body.title === 'string') event.title = body.title.trim().slice(0, 120) || 'Secret Santa';
+  if (typeof body.title === 'string') event.title = body.title.trim().slice(0, 120) || event.title || 'Secret Santa';
   if (typeof body.budget === 'string') event.budget = body.budget.trim().slice(0, 80);
   if (typeof body.note === 'string') event.note = body.note.trim().slice(0, 500);
 
   if (event.draw) {
     if (body.people !== undefined || body.rules !== undefined) {
       return withCors(
-        err('People and rules are locked after the draw. You can still edit the title, budget, and note.'),
+        err(
+          'People and rules are locked after the draw. You can still edit the name, budget, and note.',
+          400,
+          { code: 'LOCKED_AFTER_DRAW' }
+        ),
         request
       );
     }
@@ -44,7 +48,13 @@ export async function onRequestPatch(context) {
         if (!name) continue;
         const key = name.toLowerCase();
         if (seen.has(key)) {
-          return withCors(err(`Duplicate name: ${name}. Add a surname or initial.`), request);
+          return withCors(
+            err(`Duplicate name: ${name}. Add a surname or initial.`, 400, {
+              code: 'DUPLICATE_NAME',
+              name,
+            }),
+            request
+          );
         }
         seen.add(key);
         const email = String(p?.email || '').trim().slice(0, 120);
@@ -78,6 +88,7 @@ export async function onRequestPatch(context) {
         const diagnosis = diagnoseRules(event.people, rules);
         return withCors(
           err(diagnosis.message || 'These rules make a draw impossible.', 400, {
+            code: 'RULES_IMPOSSIBLE',
             diagnosis,
           }),
           request
@@ -102,7 +113,7 @@ export async function onRequestPatch(context) {
           diagnosis.message ||
             'With this group, the current rules make a draw impossible. Remove a rule or add someone.',
           400,
-          { diagnosis }
+          { code: 'RULES_IMPOSSIBLE', diagnosis }
         ),
         request
       );

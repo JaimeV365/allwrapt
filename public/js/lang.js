@@ -43,7 +43,20 @@ export function mountLangSwitcher(onChange) {
 
   // Ensure address bar shows the active language for easy copying/sharing
   syncLangToUrl(getLang());
+  function refreshBadges() {
+    document.querySelectorAll('[data-i18n-badge]').forEach((el) => {
+      el.textContent = el.dataset.i18nBadge === 'ok' ? t('msg.ok') : t('msg.err');
+    });
+  }
+
   paint();
   applyI18n();
-  return { refresh: () => { applyI18n(); paint(); } };
+  refreshBadges();
+  return {
+    refresh: () => {
+      applyI18n();
+      paint();
+      refreshBadges();
+    },
+  };
 }

@@ -1,7 +1,7 @@
 import { startSnow } from './snow.js';
 import { api, esc, say, copyText } from './api.js';
 import { mountLangSwitcher } from './lang.js';
-import { t, formatDiagnosis, applyI18n, withLang, getLang } from './i18n.js';
+import { t, formatApiError, applyI18n, withLang, getLang } from './i18n.js';
 
 startSnow();
 mountLangSwitcher(() => {
@@ -70,8 +70,7 @@ function wait(ms) {
 }
 
 function apiErrorMessage(e) {
-  if (e?.data?.diagnosis) return formatDiagnosis(e.data.diagnosis, e.message);
-  return e?.message || t('diag.fallback');
+  return formatApiError(e);
 }
 
 async function load() {

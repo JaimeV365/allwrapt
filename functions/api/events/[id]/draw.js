@@ -14,12 +14,16 @@ export async function onRequestPost(context) {
   if (error) return withCors(error, request);
 
   if (event.people.length < 3) {
-    return withCors(err('Add at least three people first.'), request);
+    return withCors(err('Add at least three people first.', 400, { code: 'NEED_THREE' }), request);
   }
 
   if (event.draw) {
     return withCors(
-      err('Already drawn. Starting over is not supported in this version — create a new event if you need a fresh draw.'),
+      err(
+        'Already drawn. Starting over is not supported in this version — create a new occasion if you need a fresh draw.',
+        400,
+        { code: 'ALREADY_DRAWN' }
+      ),
       request
     );
   }
@@ -30,7 +34,10 @@ export async function onRequestPost(context) {
   if (!map) {
     const diagnosis = diagnoseRules(event.people, rules);
     return withCors(
-      err(diagnosis.message || 'No valid draw exists with these rules.', 400, { diagnosis }),
+      err(diagnosis.message || 'No valid draw exists with these rules.', 400, {
+        code: 'RULES_IMPOSSIBLE',
+        diagnosis,
+      }),
       request
     );
   }

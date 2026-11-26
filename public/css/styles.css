@@ -50,11 +50,19 @@ body {
   z-index: 100;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 6px;
   padding: 8px 12px;
-  background: rgba(10, 28, 23, 0.92);
+  background: rgba(10, 28, 23, 0.94);
   border-bottom: 1px solid var(--line);
   backdrop-filter: blur(8px);
+}
+.lang-bar::before {
+  content: attr(aria-label);
+  margin-right: auto;
+  color: var(--mute);
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 .lang-btn {
   display: inline-flex;

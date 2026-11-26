@@ -1,3 +1,5 @@
+import { t } from './i18n.js';
+
 export async function api(path, { method = 'GET', token, body } = {}) {
   const headers = { accept: 'application/json' };
   if (token) headers['x-manage-token'] = token;
@@ -41,7 +43,8 @@ export function say(el, text, kind) {
   if (kind === 'ok' || kind === 'err') {
     const badge = document.createElement('span');
     badge.className = 'badge';
-    badge.textContent = kind === 'ok' ? 'OK' : 'Error';
+    badge.dataset.i18nBadge = kind;
+    badge.textContent = kind === 'ok' ? t('msg.ok') : t('msg.err');
     el.appendChild(badge);
   }
   const span = document.createElement('span');
