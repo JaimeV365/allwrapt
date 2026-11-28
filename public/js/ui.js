@@ -2,13 +2,18 @@ import { t } from './i18n.js';
 
 /** Close any open custom menus when clicking outside. */
 document.addEventListener('click', (e) => {
-  if (e.target.closest('.c-select')) return;
-  document.querySelectorAll('.c-select.is-open').forEach((el) => closeSelect(el));
+  if (!e.target.closest('.c-select')) {
+    document.querySelectorAll('.c-select.is-open').forEach((el) => closeSelect(el));
+  }
+  if (!e.target.closest('.c-date')) {
+    document.querySelectorAll('.c-date.is-open').forEach((el) => closeDate(el));
+  }
 });
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     document.querySelectorAll('.c-select.is-open').forEach((el) => closeSelect(el));
+    document.querySelectorAll('.c-date.is-open').forEach((el) => closeDate(el));
   }
 });
 
@@ -17,6 +22,14 @@ function closeSelect(root) {
   const menu = root.querySelector('.c-select-menu');
   if (menu) menu.hidden = true;
   const trigger = root.querySelector('.c-select-trigger');
+  if (trigger) trigger.setAttribute('aria-expanded', 'false');
+}
+
+function closeDate(root) {
+  root.classList.remove('is-open');
+  const pop = root.querySelector('.c-cal');
+  if (pop) pop.hidden = true;
+  const trigger = root.querySelector('.c-date-trigger');
   if (trigger) trigger.setAttribute('aria-expanded', 'false');
 }
 
@@ -64,6 +77,7 @@ export function createSelect(root, { placeholder = '', onChange } = {}) {
     document.querySelectorAll('.c-select.is-open').forEach((el) => {
       if (el !== root) closeSelect(el);
     });
+    document.querySelectorAll('.c-date.is-open').forEach((el) => closeDate(el));
     if (open) {
       root.classList.add('is-open');
       menu.hidden = false;
@@ -144,145 +158,232 @@ export function createCheck(root, { checked = false, onChange } = {}) {
   };
 }
 
+function todayIso() {
+  const n = new Date();
+  return toIso(n.getFullYear(), n.getMonth() + 1, n.getDate());
+}
+
+function toIso(y, m, d) {
+  return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+}
+
+function parseIso(iso) {
+  if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
+  const [y, m, d] = iso.split('-').map(Number);
+  return { y, m, d };
+}
+
+function weekdayLabels() {
+  const lang = document.documentElement.lang || 'en';
+  // Monday-first week (EN/ES/FR)
+  const labels = [];
+  for (let i = 0; i < 7; i++) {
+    // 2024-01-01 was a Monday
+    const date = new Date(2024, 0, 1 + i);
+    try {
+      labels.push(new Intl.DateTimeFormat(lang, { weekday: 'short' }).format(date));
+    } catch {
+      labels.push(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i]);
+    }
+  }
+  return labels;
+}
+
 /**
- * Custom date field: day / month / year selects (no native calendar).
- * Value: YYYY-MM-DD or ''.
+ * Custom calendar date field (no native date input).
+ * Value: YYYY-MM-DD or ''. Opens on today when empty.
  */
 export function createDateField(root, { onChange } = {}) {
   if (!root) return null;
   root.classList.add('c-date');
   root.innerHTML = `
     <div class="c-date-row">
-      <div class="c-select" data-part="day"></div>
-      <div class="c-select" data-part="month"></div>
-      <div class="c-select" data-part="year"></div>
-      <button type="button" class="ghost c-date-clear" data-i18n="manage.dateClear">Clear</button>
+      <button type="button" class="c-date-trigger" aria-haspopup="dialog" aria-expanded="false">
+        <span class="c-date-label"></span>
+        <span class="c-date-icon" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="ghost c-date-clear" hidden></button>
     </div>
+    <div class="c-cal" role="dialog" hidden></div>
   `;
-  const dayRoot = root.querySelector('[data-part="day"]');
-  const monthRoot = root.querySelector('[data-part="month"]');
-  const yearRoot = root.querySelector('[data-part="year"]');
+
+  const trigger = root.querySelector('.c-date-trigger');
+  const label = root.querySelector('.c-date-label');
   const clearBtn = root.querySelector('.c-date-clear');
+  const cal = root.querySelector('.c-cal');
 
-  let day = '';
-  let month = '';
-  let year = '';
+  let value = '';
+  let viewY;
+  let viewM;
+  let disabled = false;
 
-  const emit = () => {
-    if (typeof onChange === 'function') onChange(getValue());
-  };
-
-  const daySel = createSelect(dayRoot, {
-    placeholder: t('manage.day'),
-    onChange: (v) => {
-      day = v;
-      emit();
-    },
-  });
-  const monthSel = createSelect(monthRoot, {
-    placeholder: t('manage.month'),
-    onChange: (v) => {
-      month = v;
-      clampDay();
-      emit();
-    },
-  });
-  const yearSel = createSelect(yearRoot, {
-    placeholder: t('manage.year'),
-    onChange: (v) => {
-      year = v;
-      clampDay();
-      emit();
-    },
-  });
-
-  function monthOptions() {
-    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((m) => ({
-      value: String(m).padStart(2, '0'),
-      label: t(`manage.month.${m}`),
-    }));
+  function emit() {
+    if (typeof onChange === 'function') onChange(value);
   }
 
-  function yearOptions() {
-    const now = new Date().getFullYear();
-    const years = [];
-    for (let y = now - 1; y <= now + 3; y++) years.push({ value: String(y), label: String(y) });
-    return years;
-  }
-
-  function daysInMonth(y, m) {
-    if (!y || !m) return 31;
-    return new Date(Number(y), Number(m), 0).getDate();
-  }
-
-  function dayOptions() {
-    const max = daysInMonth(year, month);
-    const opts = [];
-    for (let d = 1; d <= max; d++) {
-      opts.push({ value: String(d).padStart(2, '0'), label: String(d) });
-    }
-    return opts;
-  }
-
-  function clampDay() {
-    daySel.setOptions(dayOptions());
-    const max = daysInMonth(year, month);
-    if (day && Number(day) > max) {
-      day = String(max).padStart(2, '0');
-      daySel.set(day);
+  function syncViewToValueOrToday() {
+    const parsed = parseIso(value);
+    if (parsed) {
+      viewY = parsed.y;
+      viewM = parsed.m;
     } else {
-      daySel.set(day);
+      const n = new Date();
+      viewY = n.getFullYear();
+      viewM = n.getMonth() + 1;
     }
   }
 
-  function refreshLabels() {
-    monthSel.setPlaceholder(t('manage.month'));
-    daySel.setPlaceholder(t('manage.day'));
-    yearSel.setPlaceholder(t('manage.year'));
-    monthSel.setOptions(monthOptions());
-    yearSel.setOptions(yearOptions());
-    daySel.setOptions(dayOptions());
-    monthSel.set(month);
-    yearSel.set(year);
-    daySel.set(day);
+  function paintTrigger() {
+    if (value) {
+      label.textContent = formatDueDate(value);
+      label.classList.remove('is-placeholder');
+      clearBtn.hidden = false;
+    } else {
+      label.textContent = t('manage.datePick');
+      label.classList.add('is-placeholder');
+      clearBtn.hidden = true;
+    }
     clearBtn.textContent = t('manage.dateClear');
   }
 
-  function getValue() {
-    if (!year || !month || !day) return '';
-    return `${year}-${month}-${day}`;
-  }
+  function paintCal() {
+    if (viewY == null) syncViewToValueOrToday();
+    const monthName = t(`manage.month.${viewM}`);
+    const title = `${monthName} ${viewY}`;
+    const dow = weekdayLabels();
+    const first = new Date(viewY, viewM - 1, 1);
+    // Monday = 0 … Sunday = 6
+    const startPad = (first.getDay() + 6) % 7;
+    const daysInMonth = new Date(viewY, viewM, 0).getDate();
+    const today = todayIso();
+    const cells = [];
 
-  function setValue(iso) {
-    if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) {
-      year = month = day = '';
-    } else {
-      const [y, m, d] = iso.split('-');
-      year = y;
-      month = m;
-      day = d;
+    for (let i = 0; i < startPad; i++) {
+      cells.push('<span class="c-cal-day is-empty"></span>');
     }
-    refreshLabels();
+    for (let d = 1; d <= daysInMonth; d++) {
+      const iso = toIso(viewY, viewM, d);
+      const classes = ['c-cal-day'];
+      if (iso === today) classes.push('is-today');
+      if (iso === value) classes.push('is-selected');
+      cells.push(
+        `<button type="button" class="${classes.join(' ')}" data-iso="${iso}">${d}</button>`
+      );
+    }
+
+    cal.innerHTML = `
+      <div class="c-cal-head">
+        <button type="button" class="ghost c-cal-nav" data-nav="-1" aria-label="${escapeAttr(
+          t('manage.datePrev')
+        )}">‹</button>
+        <span class="c-cal-title">${escapeHtml(title)}</span>
+        <button type="button" class="ghost c-cal-nav" data-nav="1" aria-label="${escapeAttr(
+          t('manage.dateNext')
+        )}">›</button>
+      </div>
+      <div class="c-cal-dow">${dow.map((d) => `<span>${escapeHtml(d)}</span>`).join('')}</div>
+      <div class="c-cal-grid">${cells.join('')}</div>
+      <div class="c-cal-foot">
+        <button type="button" class="ghost c-cal-today">${escapeHtml(t('manage.dateToday'))}</button>
+      </div>
+    `;
   }
 
-  clearBtn.addEventListener('click', () => {
-    year = month = day = '';
-    refreshLabels();
+  function open() {
+    if (disabled) return;
+    document.querySelectorAll('.c-select.is-open').forEach((el) => closeSelect(el));
+    document.querySelectorAll('.c-date.is-open').forEach((el) => {
+      if (el !== root) closeDate(el);
+    });
+    // First open with no date: start on today and select today
+    if (!value) {
+      value = todayIso();
+      paintTrigger();
+      emit();
+    }
+    syncViewToValueOrToday();
+    paintCal();
+    root.classList.add('is-open');
+    cal.hidden = false;
+    trigger.setAttribute('aria-expanded', 'true');
+  }
+
+  function close() {
+    closeDate(root);
+  }
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (root.classList.contains('is-open')) close();
+    else open();
+  });
+
+  clearBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    value = '';
+    paintTrigger();
+    close();
     emit();
   });
 
-  refreshLabels();
+  cal.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const nav = e.target.closest('[data-nav]');
+    if (nav) {
+      const delta = Number(nav.getAttribute('data-nav'));
+      viewM += delta;
+      if (viewM < 1) {
+        viewM = 12;
+        viewY -= 1;
+      } else if (viewM > 12) {
+        viewM = 1;
+        viewY += 1;
+      }
+      paintCal();
+      return;
+    }
+    if (e.target.closest('.c-cal-today')) {
+      value = todayIso();
+      syncViewToValueOrToday();
+      paintTrigger();
+      paintCal();
+      emit();
+      close();
+      return;
+    }
+    const dayBtn = e.target.closest('[data-iso]');
+    if (dayBtn) {
+      value = dayBtn.getAttribute('data-iso') || '';
+      paintTrigger();
+      paintCal();
+      emit();
+      close();
+    }
+  });
+
+  paintTrigger();
 
   return {
     el: root,
-    get: getValue,
-    set: setValue,
-    refreshLabels,
+    get: () => value,
+    set(iso) {
+      value = parseIso(iso) ? iso : '';
+      paintTrigger();
+      if (root.classList.contains('is-open')) {
+        syncViewToValueOrToday();
+        paintCal();
+      }
+    },
+    refreshLabels() {
+      paintTrigger();
+      if (root.classList.contains('is-open')) paintCal();
+    },
     setDisabled(d) {
-      daySel.setDisabled(d);
-      monthSel.setDisabled(d);
-      yearSel.setDisabled(d);
-      clearBtn.disabled = Boolean(d);
+      disabled = Boolean(d);
+      trigger.disabled = disabled;
+      clearBtn.disabled = disabled;
+      root.classList.toggle('is-disabled', disabled);
+      if (disabled) close();
     },
   };
 }
