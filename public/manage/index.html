@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/styles.css?v=4">
+<link rel="stylesheet" href="/css/styles.css?v=5">
 </head>
 <body data-title-key="meta.manageTitle">
 <div class="snow" id="snow" aria-hidden="true"></div>
@@ -28,15 +28,6 @@
   <h1 class="page-title" data-i18n="manage.title">Your draw</h1>
   <p class="sub" data-i18n="manage.sub">There is no login. If you lose this page’s link, you can’t come back to edit this draw.</p>
 
-  <div class="manage-banner">
-    <strong data-i18n="manage.saveTitle">Save your secret manage link</strong>
-    <p style="margin:8px 0 0;color:var(--ink)" data-i18n="manage.saveBody">Bookmark this page, copy the link into your notes, or email it to yourself. It’s the only way to reopen this draw later. Anyone with the link can manage the occasion — keep it private.</p>
-    <code id="manageLink"></code>
-    <div style="margin-top:10px">
-      <button type="button" class="ghost" id="copyManage" data-i18n="manage.copyLink">Copy manage link</button>
-    </div>
-  </div>
-
   <section class="panel">
     <h2 data-i18n="manage.event">The occasion</h2>
     <label class="field" for="ev" data-i18n="manage.name">Name</label>
@@ -46,7 +37,7 @@
 
   <section class="panel">
     <h2 data-i18n="manage.people">Participants</h2>
-    <p class="hint" data-i18n="manage.peopleHint">At least three people.</p>
+    <p class="hint" data-i18n="manage.peopleHint">Add people one by one. You need at least three before the next steps appear.</p>
     <div class="row">
       <input type="text" id="pname" data-i18n-placeholder="manage.namePh" placeholder="Name" aria-label="Participant name" maxlength="80">
       <input type="email" id="pemail" placeholder="Email (optional)" aria-label="Participant email" maxlength="120" hidden>
@@ -54,10 +45,37 @@
     </div>
     <div class="chips" id="people"></div>
     <div class="msg" id="pmsg" role="status"></div>
-    <p class="hint" id="needMore" hidden data-i18n="manage.needMore">Add at least three people to continue with gift details, rules, and the draw.</p>
+    <p class="hint" id="needMore" hidden data-i18n="manage.needMore">Add at least three people to continue with rules, gift details, and the draw.</p>
   </section>
 
   <div id="setupRest" hidden>
+    <div class="manage-banner" id="saveBanner">
+      <strong data-i18n="manage.saveTitle">Save your secret manage link</strong>
+      <p style="margin:8px 0 0;color:var(--ink)" data-i18n="manage.saveBody">Bookmark this page, copy the link into your notes, or email it to yourself. It’s the only way to reopen this draw later. Anyone with the link can manage the occasion — keep it private.</p>
+      <code id="manageLink"></code>
+      <div style="margin-top:10px">
+        <button type="button" class="ghost" id="copyManage" data-i18n="manage.copyLink">Copy manage link</button>
+      </div>
+    </div>
+
+    <section class="panel">
+      <h2 data-i18n="manage.rules">Rules</h2>
+      <p class="hint" data-i18n="manage.rulesHint">Stop certain pairings — for example partners. You can’t pick the same person twice, and AllWrapt blocks rules that would make a draw impossible.</p>
+      <div class="row">
+        <div id="ra" class="c-select" aria-label="Giver"></div>
+        <span style="color:var(--mute)" data-i18n="manage.cantGive">can’t give to</span>
+        <div id="rb" class="c-select" aria-label="Receiver"></div>
+      </div>
+      <div class="rules-actions">
+        <button type="button" class="c-check is-checked" id="both" aria-checked="true">
+          <span data-i18n="manage.bothWays">Apply both ways</span>
+        </button>
+        <button type="button" id="addR" data-i18n="manage.addRule">Add rule</button>
+      </div>
+      <ul class="list" id="rules"></ul>
+      <div class="msg" id="rmsg" role="status"></div>
+    </section>
+
     <section class="panel">
       <h2 data-i18n="manage.revealDetails">Shown on the reveal</h2>
       <p class="hint" data-i18n="manage.revealDetailsHint">Optional. Each person sees these when they open their private link.</p>
@@ -68,22 +86,6 @@
       <label class="field" for="note" data-i18n="manage.note">Message shown with the reveal (optional)</label>
       <textarea id="note" data-i18n-placeholder="manage.notePh" placeholder="e.g. Gifts exchanged on 20 Dec" maxlength="500"></textarea>
       <div class="msg" id="detailsMsg" role="status"></div>
-    </section>
-
-    <section class="panel">
-      <h2 data-i18n="manage.rules">Rules</h2>
-      <p class="hint" data-i18n="manage.rulesHint">Stop certain pairings — for example partners. You can’t pick the same person twice, and AllWrapt blocks rules that would make a draw impossible.</p>
-      <div class="row">
-        <div id="ra" class="c-select" aria-label="Giver"></div>
-        <span style="color:var(--mute)" data-i18n="manage.cantGive">can’t give to</span>
-        <div id="rb" class="c-select" aria-label="Receiver"></div>
-      </div>
-      <button type="button" class="c-check is-checked" id="both" aria-checked="true">
-        <span data-i18n="manage.bothWays">Apply both ways</span>
-      </button>
-      <button type="button" class="ghost" id="addR" data-i18n="manage.addRule">Add rule</button>
-      <ul class="list" id="rules"></ul>
-      <div class="msg" id="rmsg" role="status"></div>
     </section>
 
     <section class="panel">
@@ -108,7 +110,7 @@
   </div>
 </div>
 
-<script type="module" src="/js/manage.js?v=4"></script>
-<script type="module" src="/js/analytics.js?v=4"></script>
+<script type="module" src="/js/manage.js?v=5"></script>
+<script type="module" src="/js/analytics.js?v=5"></script>
 </body>
 </html>

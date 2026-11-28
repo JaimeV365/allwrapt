@@ -3,7 +3,7 @@
  * Set your beacon token in /js/analytics-config.js after enabling
  * Web Analytics in the Cloudflare dashboard.
  */
-import { CF_WEB_ANALYTICS_TOKEN } from './analytics-config.js?v=4';
+import { CF_WEB_ANALYTICS_TOKEN } from './analytics-config.js?v=5';
 
 (function loadCloudflareAnalytics() {
   const token = String(CF_WEB_ANALYTICS_TOKEN || '').trim();

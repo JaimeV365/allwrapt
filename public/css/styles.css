@@ -243,6 +243,17 @@ button:active,
 .btn:active { transform: scale(0.98); }
 
 /* Custom checkbox — after button rules so it isn’t overridden */
+.rules-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+  margin: 16px 0 8px;
+}
+.rules-actions .c-check {
+  margin: 0;
+}
+
 button.c-check,
 .c-check {
   display: inline-flex;
