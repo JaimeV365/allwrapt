@@ -23,6 +23,7 @@ export async function onRequestPost(context) {
     title: String(body.title || 'Secret Santa').slice(0, 120),
     budget: String(body.budget || '').slice(0, 80),
     note: String(body.note || '').slice(0, 500),
+    dueDate: '',
     people: [],
     rules: [],
     draw: null,

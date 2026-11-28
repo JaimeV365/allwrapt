@@ -31,12 +31,16 @@ export async function onRequestPatch(context) {
   }
   if (typeof body.budget === 'string') event.budget = body.budget.slice(0, 80);
   if (typeof body.note === 'string') event.note = body.note.slice(0, 500);
+  if (typeof body.dueDate === 'string') {
+    const d = body.dueDate.trim();
+    event.dueDate = /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : '';
+  }
 
   if (event.draw) {
     if (body.people !== undefined || body.rules !== undefined) {
       return withCors(
         err(
-          'People and rules are locked after the draw. You can still edit the name, budget, and note.',
+          'People and rules are locked after the draw. You can still edit the name, budget, note, and date.',
           400,
           { code: 'LOCKED_AFTER_DRAW' }
         ),

@@ -38,8 +38,20 @@
       <div class="name" id="rtarget"></div>
       <button type="button" class="ghost" id="hideBtn" data-i18n="reveal.hide">Hide again</button>
     </div>
-    <p class="meta" id="rbud"></p>
-    <p class="meta" id="rnote"></p>
+    <div class="reveal-details" id="rdetails" hidden>
+      <div class="reveal-detail" id="rbudWrap" hidden>
+        <span class="reveal-detail-label" data-i18n="reveal.budgetLabel">Budget</span>
+        <p class="reveal-detail-value" id="rbud"></p>
+      </div>
+      <div class="reveal-detail" id="rdueWrap" hidden>
+        <span class="reveal-detail-label" data-i18n="reveal.dueLabel">Bring / ready by</span>
+        <p class="reveal-detail-value" id="rdue"></p>
+      </div>
+      <div class="reveal-detail" id="rnoteWrap" hidden>
+        <span class="reveal-detail-label" data-i18n="reveal.noteLabel">Note</span>
+        <p class="reveal-detail-value" id="rnote"></p>
+      </div>
+    </div>
   </section>
 </main>
 

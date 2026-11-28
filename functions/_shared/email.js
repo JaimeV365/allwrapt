@@ -1,4 +1,4 @@
-export function revealEmail({ toName, eventTitle, revealUrl, budget, note }) {
+export function revealEmail({ toName, eventTitle, revealUrl, budget, note, dueDate }) {
   const safeTitle = eventTitle || 'Secret Santa';
   const subject = `Your ${safeTitle} link`;
   const text = [
@@ -9,6 +9,7 @@ export function revealEmail({ toName, eventTitle, revealUrl, budget, note }) {
     '',
     revealUrl,
     budget ? `\nBudget: ${budget}` : '',
+    dueDate ? `\nBring / ready by: ${dueDate}` : '',
     note ? `\n${note}` : '',
     '',
     '— AllWrapt',
@@ -31,6 +32,7 @@ export function revealEmail({ toName, eventTitle, revealUrl, budget, note }) {
         </td></tr>
         <tr><td style="padding-top:20px;font-size:14px;line-height:1.5;font-family:Arial,sans-serif;color:#a8b5ad;">
           ${budget ? `Budget: ${escapeHtml(budget)}<br>` : ''}
+          ${dueDate ? `Bring / ready by: ${escapeHtml(dueDate)}<br>` : ''}
           ${note ? escapeHtml(note) : ''}
         </td></tr>
       </table>

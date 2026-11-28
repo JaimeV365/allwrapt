@@ -47,6 +47,7 @@ export async function onRequestPost(context) {
       revealUrl,
       budget: event.budget,
       note: event.note,
+      dueDate: event.dueDate || '',
     });
     const sent = await sendWithResend(env, {
       to: person.email,

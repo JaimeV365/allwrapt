@@ -29,6 +29,7 @@ export function publicEvent(event) {
     title: event.title,
     budget: event.budget,
     note: event.note,
+    dueDate: event.dueDate || '',
     people: event.people,
     rules: event.rules,
     drawn: Boolean(event.draw),

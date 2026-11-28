@@ -2,11 +2,9 @@ import { startSnow } from './snow.js';
 import { api, esc, say, copyText } from './api.js';
 import { mountLangSwitcher } from './lang.js';
 import { t, formatApiError, applyI18n, withLang, getLang } from './i18n.js';
+import { createSelect, createCheck, createDateField } from './ui.js';
 
 startSnow();
-mountLangSwitcher(() => {
-  if (event) render({ keepErrors: true });
-});
 
 const params = new URLSearchParams(location.search);
 const eventId = params.get('e') || '';
@@ -18,6 +16,26 @@ let event = null;
 let lastRuleError = '';
 let lastDrawError = '';
 let lastPeopleError = '';
+
+const dueDateField = createDateField($('#dueDate'), {
+  onChange: () => queueMetaSave(),
+});
+
+const raSelect = createSelect($('#ra'), {
+  placeholder: t('manage.pickPerson'),
+  onChange: () => syncReceiverOptions(),
+});
+const rbSelect = createSelect($('#rb'), {
+  placeholder: t('manage.pickPerson'),
+});
+const bothCheck = createCheck($('#both'), { checked: true });
+
+mountLangSwitcher(() => {
+  dueDateField?.refreshLabels();
+  raSelect?.setPlaceholder(t('manage.pickPerson'));
+  rbSelect?.setPlaceholder(t('manage.pickPerson'));
+  if (event) render({ keepErrors: true });
+});
 
 function manageUrl() {
   return withLang(
@@ -34,7 +52,6 @@ function revealUrl(personId) {
 }
 
 function msgFor(person) {
-  // Keep real newlines for WhatsApp / mailto readability
   return t('manage.shareMsg', {
     name: person.name,
     title: event.title,
@@ -44,7 +61,6 @@ function msgFor(person) {
 
 function mailtoHref(person) {
   const subject = t('manage.mailSubject', { title: event.title });
-  // CRLF plays nicest with desktop/mobile mail apps
   const body = msgFor(person).replace(/\n/g, '\r\n');
   const to = person.email ? encodeURIComponent(person.email) : '';
   return (
@@ -109,6 +125,8 @@ function render(opts = {}) {
   $('#ev').value = event.title || '';
   $('#bud').value = event.budget || '';
   $('#note').value = event.note || '';
+  dueDateField?.set(event.dueDate || '');
+  dueDateField?.refreshLabels();
   $('#manageLink').textContent = manageUrl();
 
   if (!opts.keepErrors) {
@@ -129,12 +147,14 @@ function render(opts = {}) {
   $('#pname').disabled = locked;
   $('#pemail').disabled = locked;
   $('#addR').disabled = locked;
-  $('#ra').disabled = locked;
-  $('#rb').disabled = locked;
-  $('#both').disabled = locked;
+  raSelect?.setDisabled(locked);
+  rbSelect?.setDisabled(locked);
+  bothCheck?.setDisabled(locked);
   $('#drawBtn').disabled = locked;
   $('#drawBtn').textContent = locked ? t('manage.alreadyDrawn') : t('manage.drawBtn');
   $('#copyManage').textContent = t('manage.copyLink');
+  raSelect?.setPlaceholder(t('manage.pickPerson'));
+  rbSelect?.setPlaceholder(t('manage.pickPerson'));
 
   renderPeople();
   renderRules();
@@ -159,30 +179,33 @@ function renderPeople() {
   fillRuleSelects();
 }
 
+function personOptions(excludeId) {
+  return event.people
+    .filter((p) => p.id !== excludeId)
+    .map((p) => ({ value: p.id, label: p.name }));
+}
+
 function fillRuleSelects() {
-  const ra = $('#ra');
-  const rb = $('#rb');
-  if (!ra || !rb) return;
-  const prevA = ra.value;
-  const prevB = rb.value;
-  ra.innerHTML = event.people
-    .map((p) => `<option value="${esc(p.id)}">${esc(p.name)}</option>`)
-    .join('');
-  if (prevA && event.people.some((p) => p.id === prevA)) ra.value = prevA;
+  if (!raSelect || !rbSelect) return;
+  const prevA = raSelect.get();
+  const prevB = rbSelect.get();
+  const opts = personOptions();
+  raSelect.setOptions(opts);
+  if (prevA && opts.some((o) => o.value === prevA)) raSelect.set(prevA);
+  else if (opts.length) raSelect.set(opts[0].value);
+  else raSelect.set('');
   syncReceiverOptions(prevB);
 }
 
 function syncReceiverOptions(preferredB) {
-  const ra = $('#ra');
-  const rb = $('#rb');
-  if (!ra || !rb) return;
-  const giver = ra.value;
-  const keep = preferredB && preferredB !== giver ? preferredB : rb.value;
-  rb.innerHTML = event.people
-    .filter((p) => p.id !== giver)
-    .map((p) => `<option value="${esc(p.id)}">${esc(p.name)}</option>`)
-    .join('');
-  if (keep && [...rb.options].some((o) => o.value === keep)) rb.value = keep;
+  if (!raSelect || !rbSelect) return;
+  const giver = raSelect.get();
+  const keep = preferredB && preferredB !== giver ? preferredB : rbSelect.get();
+  const opts = personOptions(giver);
+  rbSelect.setOptions(opts);
+  if (keep && opts.some((o) => o.value === keep)) rbSelect.set(keep);
+  else if (opts.length) rbSelect.set(opts[0].value);
+  else rbSelect.set('');
 }
 
 function renderRules() {
@@ -231,15 +254,16 @@ function queueMetaSave() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(async () => {
     try {
-      // silent: do not re-render inputs (that was stripping spaces mid-typing)
       await savePatch(
         {
           title: $('#ev').value,
           budget: $('#bud').value,
           note: $('#note').value,
+          dueDate: dueDateField?.get() || '',
         },
         { silent: true }
       );
+      event.dueDate = dueDateField?.get() || '';
       $('#manageLink').textContent = manageUrl();
       say($('#metaMsg'), t('manage.saved'), 'ok');
       setTimeout(() => say($('#metaMsg'), ''), 1200);
@@ -296,11 +320,9 @@ $('#people')?.addEventListener('click', async (e) => {
   }
 });
 
-$('#ra')?.addEventListener('change', () => syncReceiverOptions());
-
 $('#addR')?.addEventListener('click', async () => {
-  const a = $('#ra').value;
-  const b = $('#rb').value;
+  const a = raSelect?.get() || '';
+  const b = rbSelect?.get() || '';
   lastRuleError = '';
   say($('#rmsg'), '');
   if (!a || !b) {
@@ -318,7 +340,7 @@ $('#addR')?.addEventListener('click', async () => {
     if (!rules.some((r) => r[0] === x && r[1] === y)) rules.push([x, y]);
   };
   add(a, b);
-  if ($('#both').checked) add(b, a);
+  if (bothCheck?.get()) add(b, a);
   try {
     await savePatch({ rules });
     lastRuleError = '';

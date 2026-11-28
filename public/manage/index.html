@@ -43,6 +43,9 @@
     <input type="text" id="ev" maxlength="120">
     <label class="field" for="bud" data-i18n="manage.budget">Budget (optional)</label>
     <input type="text" id="bud" data-i18n-placeholder="manage.budgetPh" placeholder="e.g. £20" maxlength="80">
+    <label class="field" id="dueLabel" data-i18n="manage.dueDate">Bring / ready by (optional)</label>
+    <div id="dueDate" class="c-date" aria-labelledby="dueLabel"></div>
+    <p class="hint" data-i18n="manage.dueDateHint" style="margin-top:8px">Shown on each person’s reveal page.</p>
     <label class="field" for="note" data-i18n="manage.note">Message shown with the reveal (optional)</label>
     <textarea id="note" data-i18n-placeholder="manage.notePh" placeholder="e.g. Gifts exchanged on 20 Dec" maxlength="500"></textarea>
     <div class="msg" id="metaMsg" role="status"></div>
@@ -64,11 +67,13 @@
     <h2 data-i18n="manage.rules">Rules</h2>
     <p class="hint" data-i18n="manage.rulesHint">Stop certain pairings — for example partners. You can’t pick the same person twice, and AllWrapt blocks rules that would make a draw impossible.</p>
     <div class="row">
-      <select id="ra" aria-label="Giver"></select>
+      <div id="ra" class="c-select" aria-label="Giver"></div>
       <span style="color:var(--mute)" data-i18n="manage.cantGive">can’t give to</span>
-      <select id="rb" aria-label="Receiver"></select>
+      <div id="rb" class="c-select" aria-label="Receiver"></div>
     </div>
-    <label class="check"><input type="checkbox" id="both" checked> <span data-i18n="manage.bothWays">Apply both ways</span></label>
+    <button type="button" class="c-check is-checked" id="both" aria-checked="true">
+      <span data-i18n="manage.bothWays">Apply both ways</span>
+    </button>
     <button type="button" class="ghost" id="addR" data-i18n="manage.addRule">Add rule</button>
     <ul class="list" id="rules"></ul>
     <div class="msg" id="rmsg" role="status"></div>

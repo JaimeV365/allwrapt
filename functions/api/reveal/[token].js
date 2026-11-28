@@ -57,6 +57,7 @@ export async function onRequestGet(context) {
       target: target.name,
       budget: event.budget || '',
       note: event.note || '',
+      dueDate: event.dueDate || '',
     }),
     request
   );

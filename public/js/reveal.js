@@ -2,6 +2,7 @@ import { startSnow } from './snow.js';
 import { api, say } from './api.js';
 import { mountLangSwitcher } from './lang.js';
 import { t, formatApiError, applyI18n, getLang } from './i18n.js';
+import { formatDueDate } from './ui.js';
 
 startSnow();
 
@@ -11,9 +12,22 @@ const $ = (s) => document.querySelector(s);
 let revealData = null;
 let brokenMessage = '';
 
+function setDetail(wrapId, valueId, value) {
+  const wrap = $(wrapId);
+  const val = $(valueId);
+  if (!wrap || !val) return;
+  const text = (value || '').trim();
+  if (text) {
+    val.textContent = text;
+    wrap.hidden = false;
+  } else {
+    val.textContent = '';
+    wrap.hidden = true;
+  }
+}
+
 function paintReveal() {
   applyI18n();
-  // Ensure OK/Error badges follow language if present
   document.querySelectorAll('[data-i18n-badge]').forEach((el) => {
     el.textContent = el.dataset.i18nBadge === 'ok' ? t('msg.ok') : t('msg.err');
   });
@@ -33,18 +47,21 @@ function paintReveal() {
   $('#rhello').textContent = t('reveal.hello', { name: revealData.hello });
   $('#revent').textContent = revealData.title || t('home.defaultTitle');
   $('#rtarget').textContent = revealData.target;
-  if (revealData.budget) {
-    $('#rbud').dataset.budget = revealData.budget;
-    $('#rbud').textContent = t('reveal.budget', { budget: revealData.budget });
-  } else {
-    $('#rbud').textContent = '';
-    delete $('#rbud')?.dataset.budget;
-  }
-  $('#rnote').textContent = revealData.note || '';
+
+  setDetail('#rbudWrap', '#rbud', revealData.budget || '');
+  setDetail('#rdueWrap', '#rdue', formatDueDate(revealData.dueDate || ''));
+  setDetail('#rnoteWrap', '#rnote', revealData.note || '');
+
+  const hasDetails = Boolean(
+    (revealData.budget || '').trim() ||
+      (revealData.dueDate || '').trim() ||
+      (revealData.note || '').trim()
+  );
+  const details = $('#rdetails');
+  if (details) details.hidden = !hasDetails;
 }
 
 mountLangSwitcher(() => {
-  // Re-translate reveal copy when the recipient switches language
   if (brokenMessage) brokenMessage = formatApiError({ data: { code: 'REVEAL_BAD' } });
   paintReveal();
 });
@@ -81,6 +98,5 @@ $('#hideBtn')?.addEventListener('click', () => {
   $('#rshow').hidden = true;
 });
 
-// Touch getLang so URL ?lang= is respected before first paint
 getLang();
 boot();
