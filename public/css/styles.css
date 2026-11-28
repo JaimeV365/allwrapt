@@ -175,12 +175,19 @@ h2 {
 }
 
 section.panel {
+  position: relative;
+  z-index: 1;
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 18px;
   margin: 0 0 16px;
   backdrop-filter: blur(8px);
+}
+/* Open menus/calendars must paint above the next panel (backdrop-filter stacking) */
+section.panel:has(.c-date.is-open),
+section.panel:has(.c-select.is-open) {
+  z-index: 40;
 }
 
 p.hint { color: var(--mute); font-size: 0.95rem; margin: 0 0 12px; }

@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/styles.css?v=3">
+<link rel="stylesheet" href="/css/styles.css?v=4">
 </head>
 <body data-title-key="meta.manageTitle">
 <div class="snow" id="snow" aria-hidden="true"></div>
@@ -41,13 +41,6 @@
     <h2 data-i18n="manage.event">The occasion</h2>
     <label class="field" for="ev" data-i18n="manage.name">Name</label>
     <input type="text" id="ev" maxlength="120">
-    <label class="field" for="bud" data-i18n="manage.budget">Budget (optional)</label>
-    <input type="text" id="bud" data-i18n-placeholder="manage.budgetPh" placeholder="e.g. £20" maxlength="80">
-    <label class="field" id="dueLabel" data-i18n="manage.dueDate">Bring / ready by (optional)</label>
-    <div id="dueDate" class="c-date" aria-labelledby="dueLabel"></div>
-    <p class="hint" data-i18n="manage.dueDateHint" style="margin-top:8px">Shown on each person’s reveal page.</p>
-    <label class="field" for="note" data-i18n="manage.note">Message shown with the reveal (optional)</label>
-    <textarea id="note" data-i18n-placeholder="manage.notePh" placeholder="e.g. Gifts exchanged on 20 Dec" maxlength="500"></textarea>
     <div class="msg" id="metaMsg" role="status"></div>
   </section>
 
@@ -61,30 +54,45 @@
     </div>
     <div class="chips" id="people"></div>
     <div class="msg" id="pmsg" role="status"></div>
+    <p class="hint" id="needMore" hidden data-i18n="manage.needMore">Add at least three people to continue with gift details, rules, and the draw.</p>
   </section>
 
-  <section class="panel">
-    <h2 data-i18n="manage.rules">Rules</h2>
-    <p class="hint" data-i18n="manage.rulesHint">Stop certain pairings — for example partners. You can’t pick the same person twice, and AllWrapt blocks rules that would make a draw impossible.</p>
-    <div class="row">
-      <div id="ra" class="c-select" aria-label="Giver"></div>
-      <span style="color:var(--mute)" data-i18n="manage.cantGive">can’t give to</span>
-      <div id="rb" class="c-select" aria-label="Receiver"></div>
-    </div>
-    <button type="button" class="c-check is-checked" id="both" aria-checked="true">
-      <span data-i18n="manage.bothWays">Apply both ways</span>
-    </button>
-    <button type="button" class="ghost" id="addR" data-i18n="manage.addRule">Add rule</button>
-    <ul class="list" id="rules"></ul>
-    <div class="msg" id="rmsg" role="status"></div>
-  </section>
+  <div id="setupRest" hidden>
+    <section class="panel">
+      <h2 data-i18n="manage.revealDetails">Shown on the reveal</h2>
+      <p class="hint" data-i18n="manage.revealDetailsHint">Optional. Each person sees these when they open their private link.</p>
+      <label class="field" for="bud" data-i18n="manage.budget">Budget (optional)</label>
+      <input type="text" id="bud" data-i18n-placeholder="manage.budgetPh" placeholder="e.g. £20" maxlength="80">
+      <label class="field" id="dueLabel" data-i18n="manage.dueDate">Bring / ready by (optional)</label>
+      <div id="dueDate" class="c-date" aria-labelledby="dueLabel"></div>
+      <label class="field" for="note" data-i18n="manage.note">Message shown with the reveal (optional)</label>
+      <textarea id="note" data-i18n-placeholder="manage.notePh" placeholder="e.g. Gifts exchanged on 20 Dec" maxlength="500"></textarea>
+      <div class="msg" id="detailsMsg" role="status"></div>
+    </section>
 
-  <section class="panel">
-    <h2 data-i18n="manage.draw">Draw</h2>
-    <p class="hint" data-i18n="manage.drawHint">Results stay hidden here. You only see who each link belongs to — not who they drew.</p>
-    <button type="button" class="big" id="drawBtn" data-i18n="manage.drawBtn">Draw names</button>
-    <div class="msg" id="dmsg" role="status"></div>
-  </section>
+    <section class="panel">
+      <h2 data-i18n="manage.rules">Rules</h2>
+      <p class="hint" data-i18n="manage.rulesHint">Stop certain pairings — for example partners. You can’t pick the same person twice, and AllWrapt blocks rules that would make a draw impossible.</p>
+      <div class="row">
+        <div id="ra" class="c-select" aria-label="Giver"></div>
+        <span style="color:var(--mute)" data-i18n="manage.cantGive">can’t give to</span>
+        <div id="rb" class="c-select" aria-label="Receiver"></div>
+      </div>
+      <button type="button" class="c-check is-checked" id="both" aria-checked="true">
+        <span data-i18n="manage.bothWays">Apply both ways</span>
+      </button>
+      <button type="button" class="ghost" id="addR" data-i18n="manage.addRule">Add rule</button>
+      <ul class="list" id="rules"></ul>
+      <div class="msg" id="rmsg" role="status"></div>
+    </section>
+
+    <section class="panel">
+      <h2 data-i18n="manage.draw">Draw</h2>
+      <p class="hint" data-i18n="manage.drawHint">Results stay hidden here. You only see who each link belongs to — not who they drew.</p>
+      <button type="button" class="big" id="drawBtn" data-i18n="manage.drawBtn">Draw names</button>
+      <div class="msg" id="dmsg" role="status"></div>
+    </section>
+  </div>
 
   <section class="panel" id="resultsSec" hidden>
     <h2 data-i18n="manage.links">Private links</h2>
@@ -100,7 +108,7 @@
   </div>
 </div>
 
-<script type="module" src="/js/manage.js?v=3"></script>
-<script type="module" src="/js/analytics.js?v=3"></script>
+<script type="module" src="/js/manage.js?v=4"></script>
+<script type="module" src="/js/analytics.js?v=4"></script>
 </body>
 </html>

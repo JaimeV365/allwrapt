@@ -1,11 +1,12 @@
-import { startSnow } from './snow.js?v=3';
-import { api, esc, say, copyText } from './api.js?v=3';
-import { mountLangSwitcher } from './lang.js?v=3';
-import { t, formatApiError, applyI18n, withLang, getLang } from './i18n.js?v=3';
-import { createSelect, createCheck, createDateField } from './ui.js?v=3';
+import { startSnow } from './snow.js?v=4';
+import { api, esc, say, copyText } from './api.js?v=4';
+import { mountLangSwitcher } from './lang.js?v=4';
+import { t, formatApiError, applyI18n, withLang, getLang } from './i18n.js?v=4';
+import { createSelect, createCheck, createDateField } from './ui.js?v=4';
 
 startSnow();
 
+const MIN_PEOPLE = 3;
 const params = new URLSearchParams(location.search);
 const eventId = params.get('e') || '';
 const manageToken = params.get('t') || '';
@@ -18,7 +19,7 @@ let lastDrawError = '';
 let lastPeopleError = '';
 
 const dueDateField = createDateField($('#dueDate'), {
-  onChange: () => queueMetaSave(),
+  onChange: () => queueMetaSave('details'),
 });
 
 const raSelect = createSelect($('#ra'), {
@@ -120,11 +121,23 @@ async function savePatch(body, { silent = false, keepErrors = false } = {}) {
   return event;
 }
 
+function setupReady() {
+  return (event?.people?.length || 0) >= MIN_PEOPLE;
+}
+
+function syncSetupRest() {
+  const ready = setupReady();
+  const rest = $('#setupRest');
+  const need = $('#needMore');
+  if (rest) rest.hidden = !ready;
+  if (need) need.hidden = ready;
+}
+
 function render(opts = {}) {
   applyI18n();
   $('#ev').value = event.title || '';
-  $('#bud').value = event.budget || '';
-  $('#note').value = event.note || '';
+  if ($('#bud')) $('#bud').value = event.budget || '';
+  if ($('#note')) $('#note').value = event.note || '';
   dueDateField?.set(event.dueDate || '');
   dueDateField?.refreshLabels();
   $('#manageLink').textContent = manageUrl();
@@ -157,6 +170,7 @@ function render(opts = {}) {
   rbSelect?.setPlaceholder(t('manage.pickPerson'));
 
   renderPeople();
+  syncSetupRest();
   renderRules();
   renderResults();
 }
@@ -250,30 +264,35 @@ function renderResults() {
 }
 
 let saveTimer;
-function queueMetaSave() {
+function queueMetaSave(which = 'meta') {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(async () => {
+    const msgEl = which === 'details' ? $('#detailsMsg') : $('#metaMsg');
     try {
       await savePatch(
         {
           title: $('#ev').value,
-          budget: $('#bud').value,
-          note: $('#note').value,
+          budget: $('#bud')?.value || '',
+          note: $('#note')?.value || '',
           dueDate: dueDateField?.get() || '',
         },
         { silent: true }
       );
       event.dueDate = dueDateField?.get() || '';
+      event.title = $('#ev').value;
+      event.budget = $('#bud')?.value || '';
+      event.note = $('#note')?.value || '';
       $('#manageLink').textContent = manageUrl();
-      say($('#metaMsg'), t('manage.saved'), 'ok');
-      setTimeout(() => say($('#metaMsg'), ''), 1200);
+      say(msgEl, t('manage.saved'), 'ok');
+      setTimeout(() => say(msgEl, ''), 1200);
     } catch (e) {
-      say($('#metaMsg'), apiErrorMessage(e), 'err');
+      say(msgEl, apiErrorMessage(e), 'err');
     }
   }, 400);
 }
-['#ev', '#bud', '#note'].forEach((sel) => {
-  $(sel)?.addEventListener('input', queueMetaSave);
+$('#ev')?.addEventListener('input', () => queueMetaSave('meta'));
+['#bud', '#note'].forEach((sel) => {
+  $(sel)?.addEventListener('input', () => queueMetaSave('details'));
 });
 
 $('#copyManage')?.addEventListener('click', async () => {
