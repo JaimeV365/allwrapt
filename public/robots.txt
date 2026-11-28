@@ -1,9 +1,9 @@
 # AllWrapt — public marketing pages only
 User-agent: *
 Allow: /
-Allow: /es
-Allow: /fr
-Allow: /en
+Allow: /en/
+Allow: /es/
+Allow: /fr/
 
 # Private organiser / reveal links must stay out of search
 Disallow: /manage
