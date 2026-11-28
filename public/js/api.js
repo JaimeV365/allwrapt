@@ -1,4 +1,4 @@
-import { t } from './i18n.js';
+import { t } from './i18n.js?v=3';
 
 export async function api(path, { method = 'GET', token, body } = {}) {
   const headers = { accept: 'application/json' };

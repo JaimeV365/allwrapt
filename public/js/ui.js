@@ -1,4 +1,4 @@
-import { t } from './i18n.js';
+import { t } from './i18n.js?v=3';
 
 /** Close any open custom menus when clicking outside. */
 document.addEventListener('click', (e) => {

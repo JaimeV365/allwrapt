@@ -1,7 +1,7 @@
-import { startSnow } from './snow.js';
-import { api, say } from './api.js';
-import { mountLangSwitcher } from './lang.js';
-import { t, withLang, getLang } from './i18n.js';
+import { startSnow } from './snow.js?v=3';
+import { api, say } from './api.js?v=3';
+import { mountLangSwitcher } from './lang.js?v=3';
+import { t, withLang, getLang } from './i18n.js?v=3';
 
 startSnow();
 mountLangSwitcher();

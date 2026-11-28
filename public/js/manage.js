@@ -1,8 +1,8 @@
-import { startSnow } from './snow.js';
-import { api, esc, say, copyText } from './api.js';
-import { mountLangSwitcher } from './lang.js';
-import { t, formatApiError, applyI18n, withLang, getLang } from './i18n.js';
-import { createSelect, createCheck, createDateField } from './ui.js';
+import { startSnow } from './snow.js?v=3';
+import { api, esc, say, copyText } from './api.js?v=3';
+import { mountLangSwitcher } from './lang.js?v=3';
+import { t, formatApiError, applyI18n, withLang, getLang } from './i18n.js?v=3';
+import { createSelect, createCheck, createDateField } from './ui.js?v=3';
 
 startSnow();
 

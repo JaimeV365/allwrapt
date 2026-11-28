@@ -1,4 +1,4 @@
-import { LANGS, getLang, setLang, applyI18n, t, langFromUrl, syncLangToUrl } from './i18n.js';
+import { LANGS, getLang, setLang, applyI18n, t, langFromUrl, syncLangToUrl } from './i18n.js?v=3';
 
 /**
  * Mount a always-visible flag language switcher.
