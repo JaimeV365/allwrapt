@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/styles.css?v=5">
+<link rel="stylesheet" href="/css/styles.css?v=6">
 </head>
 <body data-title-key="meta.manageTitle">
 <div class="snow" id="snow" aria-hidden="true"></div>
@@ -49,15 +49,6 @@
   </section>
 
   <div id="setupRest" hidden>
-    <div class="manage-banner" id="saveBanner">
-      <strong data-i18n="manage.saveTitle">Save your secret manage link</strong>
-      <p style="margin:8px 0 0;color:var(--ink)" data-i18n="manage.saveBody">Bookmark this page, copy the link into your notes, or email it to yourself. It’s the only way to reopen this draw later. Anyone with the link can manage the occasion — keep it private.</p>
-      <code id="manageLink"></code>
-      <div style="margin-top:10px">
-        <button type="button" class="ghost" id="copyManage" data-i18n="manage.copyLink">Copy manage link</button>
-      </div>
-    </div>
-
     <section class="panel">
       <h2 data-i18n="manage.rules">Rules</h2>
       <p class="hint" data-i18n="manage.rulesHint">Stop certain pairings — for example partners. You can’t pick the same person twice, and AllWrapt blocks rules that would make a draw impossible.</p>
@@ -103,6 +94,11 @@
   </section>
 </main>
 
+<aside class="save-dock" id="saveDock" hidden>
+  <p class="save-dock-text" data-i18n="manage.saveDock">Save for later — copy your secret manage link. It’s the only way back to this draw.</p>
+  <button type="button" class="ghost" id="copyManage" data-i18n="manage.copyLink">Copy manage link</button>
+</aside>
+
 <div class="draw-modal" id="drawModal" hidden role="alertdialog" aria-modal="true" aria-labelledby="drawModalTitle">
   <div class="draw-modal-card">
     <p class="draw-modal-title" id="drawModalTitle" data-i18n="manage.drawing">Drawing…</p>
@@ -110,7 +106,7 @@
   </div>
 </div>
 
-<script type="module" src="/js/manage.js?v=5"></script>
-<script type="module" src="/js/analytics.js?v=5"></script>
+<script type="module" src="/js/manage.js?v=6"></script>
+<script type="module" src="/js/analytics.js?v=6"></script>
 </body>
 </html>

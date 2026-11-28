@@ -1,8 +1,8 @@
-import { startSnow } from './snow.js?v=5';
-import { api, esc, say, copyText } from './api.js?v=5';
-import { mountLangSwitcher } from './lang.js?v=5';
-import { t, formatApiError, applyI18n, withLang, getLang } from './i18n.js?v=5';
-import { createSelect, createCheck, createDateField } from './ui.js?v=5';
+import { startSnow } from './snow.js?v=6';
+import { api, esc, say, copyText } from './api.js?v=6';
+import { mountLangSwitcher } from './lang.js?v=6';
+import { t, formatApiError, applyI18n, withLang, getLang } from './i18n.js?v=6';
+import { createSelect, createCheck, createDateField } from './ui.js?v=6';
 
 startSnow();
 
@@ -129,8 +129,11 @@ function syncSetupRest() {
   const ready = setupReady();
   const rest = $('#setupRest');
   const need = $('#needMore');
+  const dock = $('#saveDock');
   if (rest) rest.hidden = !ready;
   if (need) need.hidden = ready;
+  if (dock) dock.hidden = !ready;
+  document.body.classList.toggle('has-save-dock', ready);
 }
 
 function render(opts = {}) {
@@ -140,7 +143,6 @@ function render(opts = {}) {
   if ($('#note')) $('#note').value = event.note || '';
   dueDateField?.set(event.dueDate || '');
   dueDateField?.refreshLabels();
-  $('#manageLink').textContent = manageUrl();
 
   if (!opts.keepErrors) {
     lastRuleError = '';
@@ -282,7 +284,6 @@ function queueMetaSave(which = 'meta') {
       event.title = $('#ev').value;
       event.budget = $('#bud')?.value || '';
       event.note = $('#note')?.value || '';
-      $('#manageLink').textContent = manageUrl();
       say(msgEl, t('manage.saved'), 'ok');
       setTimeout(() => say(msgEl, ''), 1200);
     } catch (e) {
